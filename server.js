@@ -19,14 +19,7 @@ const wss = new WebSocketServer({ server });
 app.use(cors());
 app.use(bodyParser.json({ extend: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
 app.use("/", Routes);
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Replace with your React app's URL
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-  });
 
 // Database connection
 const url = process.env.DB_CONNECT;
@@ -42,20 +35,16 @@ wss.on('connection', (ws, req) => {
     return;
   }
 
-  // Store WebSocket connection for this user
   clients[userId] = ws;
 
   ws.on('message', (message) => {
     try {
       const { sender, receiver, message: msg } = JSON.parse(message);
 
-      // Check if the receiver's WebSocket connection is available
       if (clients[receiver]) {
-        // Send the message to the receiver's WebSocket connection
         clients[receiver].send(JSON.stringify({ sender, message: msg }));
       } else {
         console.log(`Receiver ${receiver} not found`);
-        // Optionally handle the case where the receiver is not connected
       }
     } catch (error) {
       console.error('Error parsing or sending message:', error);
@@ -63,7 +52,6 @@ wss.on('connection', (ws, req) => {
   });
 
   ws.on('close', () => {
-    // Remove WebSocket connection when client disconnects
     delete clients[userId];
     console.log(`WebSocket closed for user ${userId}`);
   });

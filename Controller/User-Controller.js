@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import Message from "../Schema/Message-Schema.js";
-import SelectedUser from "../Schema/SelectUser-Schema.js";
 
 const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
@@ -213,5 +212,27 @@ export const EditSelectedUser = async (req, res) => {
   } catch (error) {
     console.error('Error updating selected users:', error);
     res.status(500).send('Server error');
+  }
+};
+export const GetLastMessage = async (req, res) => {
+  
+  // Fetch the last message from the database
+  try {
+    const { sender, receiver } = req.query;
+    const lastMessage = await Message.findOne({
+      $or: [
+        { sender, receiver },
+        { sender: receiver, receiver: sender }
+      ]
+    }).sort({ timestamp: -1 }); // Assuming `timestamp` is the field to sort by
+
+    if (!lastMessage) {
+      return res.status(404).json({ message: 'No messages found' });
+    }
+
+    res.json(lastMessage);
+  } catch (error) {
+    console.error('Error fetching last message:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

@@ -1,5 +1,5 @@
 import express from "express";
-import { EditSelectedUser, createMessage, getAllUsers, getMessages, getSelectedUser, getUserById, userLogin, userRegister } from "../Controller/User-Controller.js";
+import { EditSelectedUser, GetLastMessage, createMessage, getAllUsers, getMessages, getSelectedUser, getUserById, userLogin, userRegister } from "../Controller/User-Controller.js";
 import auth from "../Middleware/Auth-Middleware.js";
 import multer from "multer";
 
@@ -23,4 +23,5 @@ router.post("/messages", auth, createMessage);
 router.get("/getmessages", auth, getMessages); 
 router.get("/getselectedusers", auth, getSelectedUser); 
 router.put("/selected-users", auth, EditSelectedUser); 
+router.get("/getlastmessage", auth, GetLastMessage); 
 export default router;

@@ -42,20 +42,16 @@ wss.on('connection', (ws, req) => {
     return;
   }
 
-  // Store WebSocket connection for this user
   clients[userId] = ws;
 
   ws.on('message', (message) => {
     try {
       const { sender, receiver, message: msg } = JSON.parse(message);
-
-      // Check if the receiver's WebSocket connection is available
+      const receivedTimestamp = new Date().toISOString();
       if (clients[receiver]) {
-        // Send the message to the receiver's WebSocket connection
-        clients[receiver].send(JSON.stringify({ sender, message: msg }));
+        clients[receiver].send(JSON.stringify({ sender, message: msg, timestamp: receivedTimestamp }));
       } else {
         console.log(`Receiver ${receiver} not found`);
-        // Optionally handle the case where the receiver is not connected
       }
     } catch (error) {
       console.error('Error parsing or sending message:', error);
@@ -63,7 +59,6 @@ wss.on('connection', (ws, req) => {
   });
 
   ws.on('close', () => {
-    // Remove WebSocket connection when client disconnects
     delete clients[userId];
     console.log(`WebSocket closed for user ${userId}`);
   });

@@ -28,6 +28,9 @@ app.use((req, res, next) => {
     next();
   });
 
+  app.use("/",(req,res)=>{
+    res.send("Server is running")
+  })
 // Database connection
 const url = process.env.DB_CONNECT;
 Connection(url);

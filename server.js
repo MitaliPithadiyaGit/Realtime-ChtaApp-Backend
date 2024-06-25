@@ -21,6 +21,9 @@ app.use(bodyParser.json({ extend: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", Routes);
 
+app.use("/",(req,res)=>{
+  res.send("Server is running")
+})
 // Database connection
 const url = process.env.DB_CONNECT;
 Connection(url);

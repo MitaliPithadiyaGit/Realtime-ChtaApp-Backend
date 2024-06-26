@@ -16,17 +16,18 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 // Middleware setup
-app.use(cors());
+// app.use(cors());
 app.use(bodyParser.json({ extend: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use("/", Routes);
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Replace with your React app's URL
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-  });
+const corsOptions = {
+  origin: ['https://realtime-chat-app-sigma-eosin.vercel.app', 'http://localhost:3000'], // Add your frontend URLs here
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 
   app.use("/",(req,res)=>{
     res.send("Server is running")

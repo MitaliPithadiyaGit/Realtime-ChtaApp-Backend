@@ -22,12 +22,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use("/", Routes);
 const corsOptions = {
-  origin: ['https://realtime-chat-app-sigma-eosin.vercel.app', 'http://localhost:3000'], // Add your frontend URLs here
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: 'https://realtime-chat-app-sigma-eosin.vercel.app',
+  methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
+
 
   app.use("/",(req,res)=>{
     res.send("Server is running")

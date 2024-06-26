@@ -7,8 +7,6 @@ import Message from "../Schema/Message-Schema.js";
 const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
-const fixedToken = process.env.JWT_FIXED_TOKEN;
-
 
 export const userRegister = async (req, res) => {
   try {
@@ -20,26 +18,41 @@ export const userRegister = async (req, res) => {
     }
     if (!req.file) {
       return res.status(400).json({ error: "Please upload an image" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  }
 
     user = new User({
       username,
       email,
-      password: hashedPassword,
+      password,
       image: req.file.path,
     });
 
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
     await user.save();
 
-    res.json({ data: { id: user.id, username: user.username, email: user.email, image: user.image, token: fixedToken } });
+    const payload = {
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        password:user.password,
+        image: req.file.path,
+      },
+    };
+
+    jwt.sign(payload, "jwtSecret", { expiresIn: "1h" }, (err, token) => {
+      if (err) throw err;
+      res.json({ data: {...payload.user, token} });
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 };
+
+  
 
 export const userLogin = async (req, res) => {
   try {
@@ -54,13 +67,27 @@ export const userLogin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
+    
 
-    res.json({ data: { id: user.id, username: user.username, email: user.email, image: user.image, token: fixedToken } });
+    const payload = {
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        password:user.password,
+      },
+    };
+
+    jwt.sign(payload, "jwtSecret", { expiresIn: "1h" }, (err, token) => {
+      if (err) throw err;
+      res.json({ data: {...payload.user, token} });
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 };
+
 
 export const getAllUsers = async (req, res) => {
   try {

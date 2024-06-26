@@ -16,12 +16,15 @@ export const userRegister = async (req, res) => {
     if (user) {
       return res.status(400).json({ msg: "User already exists" });
     }
-    
+    if (!req.file) {
+      return res.status(400).json({ error: "Please upload an image" });
+  }
 
     user = new User({
       username,
       email,
       password,
+      image: req.file.path,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -34,7 +37,8 @@ export const userRegister = async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        password:user.password
+        password:user.password,
+        image: req.file.path,
       },
     };
 
@@ -47,6 +51,7 @@ export const userRegister = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
 
   
 

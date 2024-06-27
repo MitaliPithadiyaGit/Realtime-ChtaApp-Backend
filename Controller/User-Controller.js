@@ -11,18 +11,19 @@ const isValidObjectId = (id) => {
 export const userRegister = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    
+    if (!username || !email || !password) {
+      return res.status(400).json({ msg: "All fields are required" });
+    }
+
+    console.log('Registering user:', { username, email, password });
 
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ msg: "User already exists" });
     }
-   
 
-    user = new User({
-      username,
-      email,
-      password
-    });
+    user = new User({ username, email, password });
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
@@ -34,20 +35,18 @@ export const userRegister = async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        password:user.password
       },
     };
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
       if (err) throw err;
-      res.json({ data: {...payload.user, token} });
+      res.json({ data: { ...payload.user, token } });
     });
   } catch (err) {
-    console.error(err.message);
+    console.error('Error during registration:', err.message);
     res.status(500).send("Server Error");
   }
 };
-
 
   
 

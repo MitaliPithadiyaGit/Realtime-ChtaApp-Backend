@@ -28,7 +28,8 @@ app.use((req, res, next) => {
   next();
 });
 
-
+console.log("DB_CONNECT:", process.env.DB_CONNECT);
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
   app.use("/",(req,res)=>{
     res.send("Server is running")

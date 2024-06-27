@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 
-const Connection = async(url)=>{
+const Connection = async (url) => {
     const URL = `${url}`;
-    try{
-       await mongoose.connect(URL)
-        console.log("Database Connected SuccessFully");
+    try {
+      await mongoose.connect(URL);
+      console.log("Database Connected Successfully");
+    } catch (error) {
+      console.error("Error While connecting to the Database:", error);
+      process.exit(1);
     }
-    catch(error){
-        console.log("Error Whileconnected to the Database:",error);
-    }
-}
+  };
 
 
 export default Connection;

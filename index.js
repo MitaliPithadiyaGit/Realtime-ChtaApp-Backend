@@ -16,21 +16,17 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 // Middleware setup
-app.use(cors({
-  origin: 'https://realtime-chat-app-sigma-eosin.vercel.app/register', // Replace with your React app's URL
+const corsOptions = {
+  origin: 'https://realtime-chat-app-sigma-eosin.vercel.app', // Replace with your frontend app's URL
   methods: 'GET, POST, OPTIONS',
-  allowedHeaders: 'Content-Type, Authorization'
-}));
+  allowedHeaders: 'Content-Type, Authorization',
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ extend: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use("/", Routes);
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://realtime-chat-app-sigma-eosin.vercel.app/register'); // Replace with your React app's URL
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
 
 console.log("DB_CONNECT:", process.env.DB_CONNECT);
 console.log("JWT_SECRET:", process.env.JWT_SECRET);

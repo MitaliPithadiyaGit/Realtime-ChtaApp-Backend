@@ -38,7 +38,7 @@ export const userRegister = async (req, res) => {
       },
     };
 
-    jwt.sign(payload, "jwtSecret", { expiresIn: "1h" }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
       if (err) throw err;
       res.json({ data: {...payload.user, token} });
     });
@@ -75,7 +75,7 @@ export const userLogin = async (req, res) => {
       },
     };
 
-    jwt.sign(payload, "jwtSecret", { expiresIn: "1h" }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
       if (err) throw err;
       res.json({ data: {...payload.user, token} });
     });

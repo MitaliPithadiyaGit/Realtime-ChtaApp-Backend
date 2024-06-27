@@ -34,7 +34,12 @@ app.use((req, res, next) => {
     res.send("Server is running")
   })
 // Database connection
+
 const url = process.env.DB_CONNECT;
+if (!url) {
+  console.error("Database connection string (DB_CONNECT) is not defined in environment variables.");
+  process.exit(1);
+}
 Connection(url);
 
 // WebSocket server logic

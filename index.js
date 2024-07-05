@@ -18,7 +18,7 @@ const wss = new WebSocketServer({ server });
 // Middleware setup
 const corsOptions = {
   origin: 'https://realtime-chat-app-sigma-eosin.vercel.app', // Replace with your frontend app's URL
-  methods: 'GET, POST, OPTIONS',
+  methods: 'GET, POST, OPTIONS,PUT',
   allowedHeaders: 'Content-Type, Authorization',
 };
 
